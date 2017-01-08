@@ -24,19 +24,22 @@ function injectDependencies(doc) {
 }
 
 for (var i=0; i<argv._.length; i++) {
-    var path = argv._[i];
-    var raw = fs.readFileSync(path).toString();
-    jsdom.env(
-        raw,
-        function (err, window) {
-            if (err != null) {
-                console.error(err);
-                return;
+    function f() {
+        var path = argv._[i];
+        var raw = fs.readFileSync(path).toString();
+        jsdom.env(
+            raw,
+            function (err, window) {
+                if (err != null) {
+                    console.error(err);
+                    return;
+                }
+                global.document = window.document;
+                highlight(window.document);
+                injectDependencies(window.document);
+                fs.writeFile(path, window.document.documentElement.outerHTML);
             }
-            global.document = window.document;
-            highlight(window.document);
-            injectDependencies(window.document);
-            fs.writeFile(path, window.document.documentElement.outerHTML);
-        }
-    );
+        );
+    }
+    f();
 }
