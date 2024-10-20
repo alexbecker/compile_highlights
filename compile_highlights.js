@@ -37,7 +37,7 @@ for (var i=0; i<argv._.length; i++) {
                 global.document = window.document;
                 highlight(window.document);
                 injectDependencies(window.document);
-                fs.writeFile(path, window.document.documentElement.outerHTML);
+                fs.writeFileSync(path, window.document.documentElement.outerHTML);
             }
         );
     }
